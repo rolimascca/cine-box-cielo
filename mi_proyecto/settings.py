@@ -93,11 +93,12 @@ TEMPLATES = [
 # ===========================
 
 DATABASES = {
-    'default': dj_database_url.config( 
-        default='sqlite:///db.sqlite3',  # Cambia esto por tu URL de conexión
-        conn_max_age=600,  # Conexiones persistentes
-    )             
-}                
+    'default': dj_database_url.config(
+        default='sqlite:///{}'.format(BASE_DIR / 'db.sqlite3'),  # fallback a SQLite local
+        conn_max_age=600,
+        ssl_require=True  # Recomendado en producción para conexiones seguras
+    )
+}             
 # ===========================
 # Validadores de contraseña
 # ===========================
