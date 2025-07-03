@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Exitoso | CineBox</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" 
+    rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3a86ff;
+            --secondary-color: #ff006e;
+            --success-color: #38b000;
+            --dark-bg: #0f172a;
+            --card-bg: #1e293b;
+            --text-light: #f1f5f9;
+            --text-gray: #94a3b8;
+            --accent-color: #ff9e00;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--dark-bg), #1e293b);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .confirmation-container {
+            background: var(--card-bg);
+            border-radius: 16px;
+            max-width: 800px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.8s ease-out;
+            position: relative;
+        }
+        
+        .confirmation-header {
+            background: linear-gradient(90deg, var(--primary-color), #4361ee);
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background-color: #f0f;
+            border-radius: 50%;
+            animation: confettiFall 5s linear infinite;
+            opacity: 0.7;
+        }
+        
+        .confetti:nth-child(2n) {
+            background-color: #ff0;
+        }
+        
+        .confetti:nth-child(3n) {
+            background-color: #0f0;
+        }
+        
+        .confetti:nth-child(5n) {
+            background-color: #0ff;
+        }
+        
+        .icon-container {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .icon-container i {
+            font-size: 50px;
+            color: white;
+            animation: scaleCheck 0.5s ease-out;
+        }
+        
+        .confirmation-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .confirmation-header p {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+        
+        .confirmation-content {
+            padding: 40px;
+        }
+        
+        .details-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .details-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--accent-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .details-card h3 i {
+            margin-right: 10px;
+        }
+        
+        .detail-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .detail-label {
+            width: 40%;
+            font-weight: 600;
+            color: var(--text-gray);
+        }
+        
+        .detail-value {
+            width: 60%;
+            font-weight: 500;
+        }
+        
+        .movie-info {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .movie-poster {
+            width: 80px;
+            height: 120px;
+            background: linear-gradient(45deg, #3a0ca3, #4361ee);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .movie-poster i {
+            font-size: 30px;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .movie-text h4 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+        
+        .movie-text p {
+            color: var(--text-gray);
+            margin-bottom: 3px;
+        }
+        
+        .download-section {
+            text-align: center;
+            margin: 30px 0;
+        }
+        
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(90deg, var(--success-color), #38b000);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(56, 176, 0, 0.3);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(56, 176, 0, 0.4);
+            background: linear-gradient(90deg, #32a500, #2d9000);
+        }
+        
+        .download-btn i {
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-home {
+            background: linear-gradient(90deg, var(--primary-color), #4361ee);
+            color: white;
+            box-shadow: 0 5px 15px rgba(58, 134, 255, 0.3);
+        }
+        
+        .btn-home:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(58, 134, 255, 0.4);
+            background: linear-gradient(90deg, #2a75e6, #3a55d4);
+        }
+        
+        .btn-tickets {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-tickets:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 25px;
+        }
+        
+        .messages li {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .messages li.success {
+            background: rgba(56, 176, 0, 0.15);
+            border: 1px solid var(--success-color);
+            color: #8affcf;
+        }
+        
+        .messages li.error {
+            background: rgba(240, 71, 71, 0.15);
+            border: 1px solid var(--secondary-color);
+            color: #ff8e8e;
+        }
+        
+        .messages li i {
+            margin-right: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .security-note {
+            text-align: center;
+            margin-top: 30px;
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .security-note i {
+            margin-right: 8px;
+            color: var(--success-color);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scaleCheck {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes confettiFall {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(500px) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .confirmation-content {
+                padding: 25px;
+            }
+            
+            .detail-item {
+                flex-direction: column;
+            }
+            
+            .detail-label, .detail-value {
+                width: 100%;
+            }
+            
+            .detail-label {
+                margin-bottom: 5px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .movie-info {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .movie-poster {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="confirmation-header">
+            <!-- Confetti animation elements -->
+            <div class="confetti" style="left: 10%; animation-delay: 0s;"></div>
+            <div class="confetti" style="left: 20%; animation-delay: 1s;"></div>
+            <div class="confetti" style="left: 30%; animation-delay: 0.5s;"></div>
+            <div class="confetti" style="left: 40%; animation-delay: 2s;"></div>
+            <div class="confetti" style="left: 50%; animation-delay: 1.5s;"></div>
+            <div class="confetti" style="left: 60%; animation-delay: 0.2s;"></div>
+            <div class="confetti" style="left: 70%; animation-delay: 2.5s;"></div>
+            <div class="confetti" style="left: 80%; animation-delay: 1.2s;"></div>
+            <div class="confetti" style="left: 90%; animation-delay: 0.8s;"></div>
+            
+            <div class="icon-container">
+                <i class="fas fa-check"></i>
+            </div>
+            <h1>¡Pago Completado!</h1>
+            <p>Gracias por tu reserva. Tu pago ha sido procesado exitosamente.</p>
+        </div>
+        
+        <div class="confirmation-content">
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li class="{{ message.tags }}">
+                    <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %}"></i>
+                    {{ message }}
+                </li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+            
+            <div class="details-card">
+                <h3><i class="fas fa-receipt"></i> Detalles del Pago</h3>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Sala y Horario:</div>
+                    <div class="detail-value">{{ pago.reserva.sala.nombre }} - {{ pago.reserva.horario.hora }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Fecha del pago:</div>
+                    <div class="detail-value">{{ pago.fecha_pago }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Monto:</div>
+                    <div class="detail-value">${{ pago.monto }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Método de pago:</div>
+                    <div class="detail-value">{{ pago.metodo_pago }}</div>
+                </div>
+                
+                <div class="detail-item">
+                    <div class="detail-label">Estado:</div>
+                    <div class="detail-value"><span class="badge bg-success">Comprobante enviado al correo</span></div>
+                </div>
+                
+                <div class="movie-info">
+                    <div class="movie-poster">
+                        <i class="fas fa-film"></i>
+                    </div>
+                    <div class="movie-text">
+                        <h4>Tu Película</h4>
+                        <p>Sala: {{ pago.reserva.sala.nombre }}</p>
+                        <p>Horario: {{ pago.reserva.horario.hora }}</p>
+                        <p>Fecha: {{ pago.fecha_pago|date:"d M Y" }}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="download-section">
+                <p class="mb-3">Puedes descargar tu comprobante de pago para tus registros:</p>
+                
+                {% if pago.id %}
+                <a href="{% url 'generar_comprobante_pdf' pago.id %}" class="download-btn">
+                    <i class="fas fa-download"></i> Descargar Comprobante
+                </a>
+                {% else %}
+                <div class="alert alert-danger">Error: No se puede generar el comprobante.</div>
+                {% endif %}
+            </div>
+            
+            <div class="action-buttons">
+                <a href="{% url 'home' %}" class="btn btn-home">
+                    <i class="fas fa-home"></i> Volver al Inicio
+                </a>
+                <a href="#" class="btn btn-tickets">
+                    <i class="fas fa-ticket-alt"></i> Ver Mis Entradas
+                </a>
+            </div>
+            
+            <div class="security-note">
+                <i class="fas fa-shield-alt"></i>
+                <span>Tu transacción es segura. La información de tu pago está encriptada.</span>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Confetti generation
+        function createConfetti() {
+            const header = document.querySelector('.confirmation-header');
+            for (let i = 0; i < 15; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                confetti.style.left = Math.random() * 100 + '%';
+                confetti.style.animationDelay = Math.random() * 3 + 's';
+                header.appendChild(confetti);
+            }
+        }
+        
+        // Create confetti on page load
+        document.addEventListener('DOMContentLoaded', createConfetti);
+        
+        // Simulate download button animation
+        const downloadBtn = document.querySelector('.download-btn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function() {
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando comprobante...';
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-download"></i> Descargar Comprobante';
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>

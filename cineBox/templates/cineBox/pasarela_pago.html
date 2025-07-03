@@ -1,0 +1,238 @@
+{% extends "base_dos.html" %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Tarjeta principal -->
+            <div class="card border-0 shadow-lg overflow-hidden">
+                <!-- Header con icono de pago -->
+                <div class="card-header bg-primary text-white py-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <h2 class="h4 mb-0"><i class="fas fa-credit-card me-2"></i>Pasarela de Pago</h2>
+                        <span class="badge bg-light text-primary">Reserva #{{ reserva.id|stringformat:"06d" }}</span>
+                    </div>
+                </div>
+                
+                <div class="card-body p-4">
+                    <!-- Resumen de la reserva -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <div class="p-3 bg-light rounded">
+                                <h3 class="h5 mb-3 text-primary">Detalles de la Reserva</h3>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <span class="fw-bold"><i class="fas fa-door-open me-2"></i>Sala:</span>
+                                        {{ reserva.sala.nombre }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <span class="fw-bold"><i class="far fa-clock me-2"></i>Horario:</span>
+                                        {{ reserva.horario.hora }}
+                                    </li>
+                                    <li class="mb-2">
+                                        <span class="fw-bold"><i class="fas fa-user me-2"></i>Usuario:</span>
+                                        {{ reserva.usuario.email }}
+                                    </li>
+                                    <li>
+                                        <span class="fw-bold"><i class="fas fa-tag me-2"></i>Precio:</span>
+                                        <span class="text-success fw-bold">S/ {{ precio }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Imagen de la sala -->
+                        <div class="col-md-6">
+                            {% if reserva.sala.imagen %}
+                            <div class="h-100 border rounded overflow-hidden">
+                                <img src="{{ reserva.sala.imagen.url }}" alt="Imagen de la sala {{ reserva.sala.nombre }}" 
+                                     class="img-fluid h-100 w-100 object-fit-cover">
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Formulario de pago -->
+                    <form method="POST" action="{% url 'procesar_pago' reserva.id %}" id="paymentForm">
+                        {% csrf_token %}
+                        
+                        <h3 class="h5 mb-3 text-primary">Método de Pago</h3>
+                        
+                        <!-- Selector de método de pago con tarjetas -->
+                        <div class="mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <input type="radio" class="btn-check" name="metodo_pago" value="tarjeta" id="tarjeta" checked>
+                                    <label class="btn btn-outline-primary w-100 py-3" for="tarjeta">
+                                        <i class="far fa-credit-card fa-2x mb-2"></i><br>
+                                        Tarjeta
+                                    </label>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <input type="radio" class="btn-check" name="metodo_pago" value="paypal" id="paypal">
+                                    <label class="btn btn-outline-primary w-100 py-3" for="paypal">
+                                        <i class="fab fa-paypal fa-2x mb-2"></i><br>
+                                        PayPal
+                                    </label>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <input type="radio" class="btn-check" name="metodo_pago" value="efectivo" id="efectivo">
+                                    <label class="btn btn-outline-primary w-100 py-3" for="efectivo">
+                                        <i class="fas fa-money-bill-wave fa-2x mb-2"></i><br>
+                                        Efectivo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Campos para tarjeta (se muestran solo cuando se selecciona tarjeta) -->
+                        <div id="tarjetaFields" class="mb-4">
+                            <div class="row g-3">
+                                <div class="col-md-12">
+                                    <label for="cardNumber" class="form-label">Número de Tarjeta</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="far fa-credit-card"></i></span>
+                                        <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" disabled>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="cardExpiry" class="form-label">Fecha de Expiración</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="far fa-calendar-alt"></i></span>
+                                        <input type="text" class="form-control" id="cardExpiry" placeholder="MM/AA" disabled>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="cardCvc" class="form-label">CVC</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                        <input type="text" class="form-control" id="cardCvc" placeholder="123" disabled>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <label for="cardName" class="form-label">Nombre en la Tarjeta</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="far fa-user"></i></span>
+                                        <input type="text" class="form-control" id="cardName" placeholder="Nombre como aparece en la tarjeta" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="monto" value="{{ precio }}">
+
+                        <!-- Botón de confirmación -->
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg py-3">
+                                <i class="fas fa-lock me-2"></i>Confirmar y Pagar S/ {{ precio }}
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Información de seguridad -->
+                    <div class="mt-4 text-center">
+                        <p class="small text-muted mb-1">
+                            <i class="fas fa-lock me-1"></i> Tus pagos están protegidos con encriptación SSL
+                        </p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <img src="https://cdn-icons-png.flaticon.com/512/196/196578.png" alt="Visa" height="30">
+                            <img src="https://cdn-icons-png.flaticon.com/512/196/196561.png" alt="Mastercard" height="30">
+                            <img src="https://cdn-icons-png.flaticon.com/512/196/196566.png" alt="American Express" height="30">
+                        </div>
+                    </div>
+
+                    <!-- Enlace para cancelar -->
+                    <div class="mt-4 text-center">
+                        <a href="{% url 'mis_reservas' %}" class="text-danger">
+                            <i class="fas fa-times me-1"></i> Cancelar reserva
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS adicional para la pasarela -->
+<style>
+    .object-fit-cover {
+        object-fit: cover;
+    }
+    
+    .btn-check:checked + .btn-outline-primary {
+        background-color: var(--bs-primary);
+        color: white;
+        border-color: var(--bs-primary);
+    }
+    
+    #tarjetaFields {
+        transition: all 0.3s ease;
+    }
+</style>
+
+<!-- JavaScript para manejar los métodos de pago -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mostrar/ocultar campos de tarjeta
+        const tarjetaFields = document.getElementById('tarjetaFields');
+        const paymentMethods = document.querySelectorAll('input[name="metodo_pago"]');
+        
+        function toggleCardFields() {
+            const selectedMethod = document.querySelector('input[name="metodo_pago"]:checked').value;
+            if(selectedMethod === 'tarjeta') {
+                tarjetaFields.style.display = 'block';
+                // Habilitar campos (en un caso real, no los deshabilitaríamos)
+                document.querySelectorAll('#tarjetaFields input').forEach(input => {
+                    input.removeAttribute('disabled');
+                });
+            } else {
+                tarjetaFields.style.display = 'none';
+                // Deshabilitar campos
+                document.querySelectorAll('#tarjetaFields input').forEach(input => {
+                    input.setAttribute('disabled', 'disabled');
+                });
+            }
+        }
+        
+        // Escuchar cambios en los métodos de pago
+        paymentMethods.forEach(method => {
+            method.addEventListener('change', toggleCardFields);
+        });
+        
+        // Inicializar
+        toggleCardFields();
+        
+        // Formatear número de tarjeta (simulación)
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            let matches = value.match(/\d{4,16}/g);
+            let match = matches && matches[0] || '';
+            let parts = [];
+            
+            for (let i=0, len=match.length; i<len; i+=4) {
+                parts.push(match.substring(i, i+4));
+            }
+            
+            if (parts.length) {
+                e.target.value = parts.join(' ');
+            } else {
+                e.target.value = value;
+            }
+        });
+        
+        // Formatear fecha de expiración
+        document.getElementById('cardExpiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+    });
+</script>
+{% endblock %}

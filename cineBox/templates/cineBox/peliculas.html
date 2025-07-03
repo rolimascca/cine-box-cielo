@@ -1,0 +1,10 @@
+<div class="contenedor-peliculas">
+    {% for pelicula in peliculas %}
+    <div class="pelicula-card">
+        <img src="{{ pelicula.imagen.url }}" alt="{{ pelicula.titulo }}" class="pelicula-imagen">
+        <h3 class="pelicula-titulo">{{ pelicula.titulo }}</h3>
+    </div>
+    {% empty %}
+    <p>No hay películas para esta sala.</p>
+    {% endfor %}
+</div>

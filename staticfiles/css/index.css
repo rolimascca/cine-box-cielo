@@ -1,0 +1,282 @@
+/* ==== VARIABLES GLOBALES ==== */
+:root {
+    --cine-dark: #041e42;
+    --cine-red: #e51937;
+    --cine-light: #ffffff;
+    --cine-gray: #f5f5f5;
+    --cine-text: #333333;
+    --cine-yellow: #f1c40f;
+}
+
+/* ==== BASE ==== */
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--cine-text);
+    background: var(--cine-light);
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+}
+
+/* ==== HEADER ==== */
+.cine-header {
+    background-color: var(--cine-dark);
+    padding: 15px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cine-logo img {
+    height: 40px;
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.cine-logo img:hover {
+    transform: scale(1.05);
+}
+
+.cine-user-btn {
+    border-radius: 20px;
+    padding: 5px 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+/* ==== HERO ==== */
+.cine-hero {
+    height: 90vh;
+    min-height: 500px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 40px 60px;
+    margin-top: 70px;
+    color: white;
+}
+
+.cine-hero::before {
+    content: none;
+    background: none;
+}
+
+.cine-hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    padding-bottom: 60px;
+}
+
+.cine-hero-sub {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-weight: 300;
+    margin-bottom: 30px;
+}
+
+.cine-hero-btn {
+    background-color: var(--cine-red);
+    border: none;
+    border-radius: 30px;
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.cine-hero-btn:hover {
+    background-color: var(--cine-yellow);
+    color: black;
+    transform: scale(1.05);
+}
+
+/* ==== SECCIÓN DE SALAS ==== */
+.cine-salas {
+    padding: 80px 0;
+    background-color: var(--cine-gray);
+}
+
+.cine-section-title {
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--cine-dark);
+    text-transform: uppercase;
+}
+
+.cine-salas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.cine-sala-card {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.cine-sala-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.cine-sala-img {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.cine-sala-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(4, 30, 66, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.cine-sala-card:hover .cine-sala-overlay {
+    opacity: 1;
+}
+
+.cine-sala-btn {
+    border-radius: 20px;
+    padding: 8px 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.cine-sala-info {
+    padding: 20px;
+}
+
+.cine-sala-info h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+    color: var(--cine-dark);
+}
+
+.cine-sala-info p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* ==== FOOTER ==== */
+.cine-footer {
+    background-color: var(--cine-dark);
+    color: white;
+    padding: 50px 0 20px;
+}
+
+.cine-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.cine-footer-links li {
+    margin-bottom: 10px;
+}
+
+.cine-footer-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.cine-footer-links a:hover {
+    color: var(--cine-yellow);
+}
+
+.cine-social-icon {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    margin-left: 10px;
+    color: white;
+    transition: all 0.3s ease;
+}
+
+.cine-social-icon:hover {
+    background: var(--cine-red);
+    transform: translateY(-3px);
+}
+
+/* ==== MEDIA QUERIES ==== */
+@media (max-width: 768px) {
+    .cine-hero {
+        height: 60vh;
+        margin-top: 60px;
+        padding: 30px 15px;
+    }
+
+    .cine-hero-btn {
+        font-size: 0.9rem;
+        padding: 10px 25px;
+    }
+
+    .cine-sala-img {
+        height: 180px;
+    }
+
+    .cine-footer {
+        text-align: center;
+    }
+
+    .cine-footer .text-md-end {
+        text-align: center !important;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 576px) {
+    .cine-hero {
+        height: 50vh;
+    }
+
+    .cine-hero-title {
+        font-size: 1.8rem;
+    }
+
+    .cine-hero-sub {
+        font-size: 1rem;
+    }
+
+    .cine-section-title {
+        font-size: 1.5rem;
+    }
+
+    .cine-sala-info h3 {
+        font-size: 1.1rem;
+    }
+}

@@ -1,0 +1,136 @@
+{% extends "base_dos.html" %}
+{% load static %}
+
+{% block title %}Mi Perfil - CineBox{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header text-center">
+        <div class="avatar">
+            <i class="fas fa-user-circle"></i>
+            <button class="btn btn-sm btn-outline-light avatar-edit">
+                <i class="fas fa-camera"></i>
+            </button>
+        </div>
+        <h2>{{ user.email|cut:"@gmail.com"|cut:"@outlook.com"|cut:"@hotmail.com"|title }}</h2>
+        <p class="text-muted">{{ user.email }}</p>
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number">{{ reservas_count }}</span>
+                <span class="stat-label">Reservas</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">Miembro desde</span>
+                <span class="stat-label">{{ user.date_joined|date:"M Y" }}</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <div class="row">
+            <!-- Sección izquierda - Información personal -->
+            <div class="col-md-6">
+                <div class="card profile-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-user-cog me-2"></i>Información Personal</h4>
+                    </div>
+                    <div class="card-body">
+                        <form>
+                            <div class="mb-3">
+                                <label class="form-label">Nombre completo</label>
+                                <input type="text" class="form-control" value="{{ user.get_full_name|default:'No especificado' }}">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Correo electrónico</label>
+                                <input type="email" class="form-control" value="{{ user.email }}" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Teléfono</label>
+                                <input type="tel" class="form-control" placeholder="Añade tu teléfono">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card profile-card mt-4">
+                    <div class="card-header">
+                        <h4><i class="fas fa-lock me-2"></i>Seguridad</h4>
+                    </div>
+                    <div class="card-body">
+                        <a href="{% url 'password_reset' %}" class="btn btn-outline-secondary w-100 mb-3">
+                            <i class="fas fa-key me-2"></i>Cambiar contraseña
+                        </a>
+                        <button class="btn btn-outline-danger w-100">
+                            <i class="fas fa-trash-alt me-2"></i>Eliminar cuenta
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección derecha - Reservas recientes -->
+            <div class="col-md-6">
+                <div class="card profile-card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-ticket-alt me-2"></i>Reservas Recientes</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if reservas_recientes %}
+                            <div class="reservations-list">
+                                {% for reserva in reservas_recientes %}
+                                <div class="reservation-item">
+                                    <div class="reservation-info">
+                                        <h5>{{ reserva.sala.nombre }}</h5>
+                                        <p class="text-muted">
+                                            {{ reserva.fecha_reserva|date:"d M Y" }} - {{ reserva.horario.hora }}
+                                        </p>
+                                    </div>
+                                    <div class="reservation-status">
+                                        <span class="badge bg-{% if reserva.usada %}success{% else %}warning{% endif %}">
+                                            {% if reserva.usada %}Usada{% else %}Pendiente{% endif %}
+                                        </span>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            <a href="{% url 'mis_reservas' %}" class="btn btn-outline-primary w-100 mt-3">
+                                Ver todas mis reservas
+                            </a>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="fas fa-ticket-alt fa-3x mb-3 text-muted"></i>
+                                <p>No tienes reservas recientes</p>
+                                <a href="{% url 'home' %}" class="btn btn-primary">Reservar ahora</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="card profile-card mt-4">
+                    <div class="card-header">
+                        <h4><i class="fas fa-bell me-2"></i>Preferencias</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="notifications">
+                            <label class="form-check-label" for="notifications">Recibir notificaciones por email</label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="promotions">
+                            <label class="form-check-label" for="promotions">Recibir promociones especiales</label>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="newsletter">
+                            <label class="form-check-label" for="newsletter">Suscribirme al newsletter</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/perfil.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro - CineBox</title>
+    <link rel="stylesheet" href="{% static 'css/registro.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="cine-container">
+        <div class="cine-header">
+            <img src="{% static 'img/logo_cinebox.png' %}" alt="CineBox" class="cine-logo">
+            <h1 class="cine-title">Registrate</h1>
+        </div>
+
+        {% if form.errors %}
+        <div class="alert error">
+            {% for error in form.non_field_errors %}
+            <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        {% if messages %}
+        <div class="alert info">
+            {% for message in messages %}
+            <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <form class="cine-form" method="post">
+            {% csrf_token %}
+
+            <div class="input-group">
+                <input type="email" name="email" id="email" required>
+                <label for="email">Correo electrónico</label>
+                <i class="fas fa-envelope input-icon"></i>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="password1" id="password1" required>
+                <label for="password1">Contraseña</label>
+                <i class="fas fa-lock input-icon"></i>
+                <span class="password-toggle"><i class="fas fa-eye"></i></span>
+            </div>
+
+            <div class="input-group">
+                <input type="password" name="password2" id="password2" required>
+                <label for="password2">Confirmar contraseña</label>
+                <i class="fas fa-lock input-icon"></i>
+                <span class="password-toggle"><i class="fas fa-eye"></i></span>
+            </div>
+
+            <button type="submit" class="cine-btn">
+                <i class="fas fa-ticket-alt"></i>
+                Crear Cuenta
+            </button>
+
+            <p style="text-align: center; margin-top: 1.5rem;">
+                ¿Ya tienes cuenta? <a href="{% url 'login' %}" class="cine-link">Inicia Sesión</a>
+            </p>
+        </form>
+    </div>
+
+    <a href="{% url 'home' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Volver al inicio
+    </a>
+
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Comprobante de Pago - CineBox</title>
+</head>
+<body style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+    <h2 style="color: #28a745;">✅ ¡Gracias por tu pago!</h2>
+    <p>Hola <strong>{{ pago.reserva.usuario.email }}</strong>,</p>
+    <p>Adjuntamos el comprobante de tu pago realizado en <strong>CineBox</strong>.</p>
+
+    <h4>Detalles del Pago:</h4>
+    <table style="border-collapse: collapse; margin-top: 10px;">
+        <tr>
+            <td style="padding: 5px;"><strong>Sala:</strong></td>
+            <td style="padding: 5px;">{{ pago.reserva.sala.nombre }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 5px;"><strong>Horario:</strong></td>
+            <td style="padding: 5px;">{{ pago.reserva.horario.hora }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 5px;"><strong>Fecha de pago:</strong></td>
+            <td style="padding: 5px;">{{ pago.fecha_pago }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 5px;"><strong>Monto:</strong></td>
+            <td style="padding: 5px;">S/ {{ pago.monto }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 5px;"><strong>Método de pago:</strong></td>
+            <td style="padding: 5px;">{{ pago.metodo_pago }}</td>
+        </tr>
+    </table>
+
+    <p style="margin-top: 20px;">📎 El comprobante en PDF está adjunto en este correo.</p>
+    <p>¡Gracias por elegir <strong>CineBox</strong>!</p>
+</body>
+</html>

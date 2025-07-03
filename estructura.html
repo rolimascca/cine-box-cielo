@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructura de Carpetas - Proyecto Django</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+            color: #ecf0f1;
+            min-height: 100vh;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            width: 900px;
+            background: rgba(25, 35, 45, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: rgba(15, 30, 45, 0.9);
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        header h1 {
+            font-size: 1.5rem;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .project-info {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .info-card {
+            background: rgba(44, 62, 80, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .tree-container {
+            padding: 15px 20px;
+        }
+        
+        .tree {
+            font-size: 0.85rem;
+            padding-left: 5px;
+        }
+        
+        .tree ul {
+            list-style-type: none;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .tree ul ul {
+            padding-left: 15px;
+        }
+        
+        .tree ul:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 8px;
+            border-left: 1px dashed rgba(127, 140, 141, 0.4);
+        }
+        
+        .tree li {
+            position: relative;
+            padding: 4px 0;
+            margin: 2px 0;
+        }
+        
+        .tree li:before {
+            content: "";
+            position: absolute;
+            top: 11px;
+            left: -10px;
+            width: 15px;
+            border-top: 1px dashed rgba(127, 140, 141, 0.4);
+        }
+        
+        .folder, .file {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .folder i {
+            color: #f1c40f;
+            font-size: 0.9rem;
+        }
+        
+        .file i {
+            color: #3498db;
+            font-size: 0.9rem;
+        }
+        
+        .folder-name, .file-name {
+            font-weight: 500;
+        }
+        
+        .folder {
+            font-weight: 600;
+            color: #f1c40f;
+        }
+        
+        .file {
+            color: #ecf0f1;
+        }
+        
+        .expand-btn {
+            margin-right: 5px;
+            color: #7f8c8d;
+            cursor: pointer;
+            font-size: 0.75rem;
+            width: 15px;
+            text-align: center;
+        }
+        
+        .collapsed > ul {
+            display: none;
+        }
+        
+        .collapsed > .expand-btn:before {
+            content: "\f0da";
+        }
+        
+        .expanded > .expand-btn:before {
+            content: "\f0d7";
+        }
+        
+        .footer {
+            padding: 12px 20px;
+            background: rgba(15, 30, 45, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.75rem;
+            color: #bdc3c7;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .legend {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-folder {
+            color: #f1c40f;
+        }
+        
+        .legend-file {
+            color: #3498db;
+        }
+        
+        .highlight {
+            background: rgba(46, 204, 113, 0.15);
+            border-left: 2px solid #2ecc71;
+            padding-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-folder-tree"></i> Estructura de Carpetas - Proyecto Django</h1>
+            <div class="project-info">
+                <div class="info-card">
+                    <i class="fas fa-code-branch"></i>
+                    <span>Django</span>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-database"></i>
+                    <span>SQLite</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="tree-container">
+            <div class="tree">
+                <ul>
+                    <li class="folder expanded">
+                        <span class="expand-btn"></span>
+                        <div class="folder">
+                            <i class="fas fa-folder-open"></i>
+                            <span class="folder-name">mi_proyecto/</span>
+                        </div>
+                        <ul>
+                            <li class="file">
+                                <i class="fas fa-file-code"></i>
+                                <span class="file-name">manage.py</span>
+                            </li>
+                            <li class="file">
+                                <i class="fas fa-database"></i>
+                                <span class="file-name">db.sqlite3</span>
+                            </li>
+                            <li class="folder expanded">
+                                <span class="expand-btn"></span>
+                                <div class="folder">
+                                    <i class="fas fa-folder-open"></i>
+                                    <span class="folder-name">cineBox/</span>
+                                </div>
+                                <ul>
+                                    <li class="file">
+                                        <i class="fas fa-file"></i>
+                                        <span class="file-name">__init__.py</span>
+                                    </li>
+                                    <li class="file highlight">
+                                        <i class="fas fa-file-alt"></i>
+                                        <span class="file-name">admin.py</span>
+                                    </li>
+                                    <li class="file">
+                                        <i class="fas fa-file"></i>
+                                        <span class="file-name">apps.py</span>
+                                    </li>
+                                    <li class="file highlight">
+                                        <i class="fas fa-file-code"></i>
+                                        <span class="file-name">models.py</span>
+                                    </li>
+                                    <li class="file highlight">
+                                        <i class="fas fa-file-code"></i>
+                                        <span class="file-name">views.py</span>
+                                    </li>
+                                    <li class="file highlight">
+                                        <i class="fas fa-file-code"></i>
+                                        <span class="file-name">urls.py</span>
+                                    </li>
+                                    <li class="file">
+                                        <i class="fas fa-file-alt"></i>
+                                        <span class="file-name">forms.py</span>
+                                    </li>
+                                    <li class="folder">
+                                        <span class="expand-btn"></span>
+                                        <div class="folder">
+                                            <i class="fas fa-folder"></i>
+                                            <span class="folder-name">static/</span>
+                                        </div>
+                                        <ul>
+                                            <li class="folder">
+                                                <i class="fas fa-folder"></i>
+                                                <span class="folder-name">css/</span>
+                                            </li>
+                                            <li class="folder">
+                                                <i class="fas fa-folder"></i>
+                                                <span class="folder-name">img/</span>
+                                            </li>
+                                            <li class="folder">
+                                                <i class="fas fa-folder"></i>
+                                                <span class="folder-name">js/</span>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="folder expanded">
+                                        <span class="expand-btn"></span>
+                                        <div class="folder">
+                                            <i class="fas fa-folder-open"></i>
+                                            <span class="folder-name">templates/</span>
+                                        </div>
+                                        <ul>
+                                            <li class="file">
+                                                <i class="fas fa-file-code"></i>
+                                                <span class="file-name">base.html</span>
+                                            </li>
+                                            <li class="file highlight">
+                                                <i class="fas fa-file-code"></i>
+                                                <span class="file-name">index.html</span>
+                                            </li>
+                                            <li class="folder">
+                                                <span class="expand-btn"></span>
+                                                <div class="folder">
+                                                    <i class="fas fa-folder"></i>
+                                                    <span class="folder-name">cineBox/</span>
+                                                </div>
+                                                <ul>
+                                                    <li class="file highlight">
+                                                        <i class="fas fa-file-code"></i>
+                                                        <span class="file-name">detalle_sala.html</span>
+                                                    </li>
+                                                    <li class="file highlight">
+                                                        <i class="fas fa-file-code"></i>
+                                                        <span class="file-name">lista_salas.html</span>
+                                                    </li>
+                                                    <li class="file highlight">
+                                                        <i class="fas fa-file-code"></i>
+                                                        <span class="file-name">login.html</span>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                    <li class="folder">
+                                        <i class="fas fa-folder"></i>
+                                        <span class="folder-name">migrations/</span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="folder">
+                                <span class="expand-btn"></span>
+                                <div class="folder">
+                                    <i class="fas fa-folder"></i>
+                                    <span class="folder-name">mi_proyecto/</span>
+                                </div>
+                                <ul>
+                                    <li class="file">
+                                        <i class="fas fa-file"></i>
+                                        <span class="file-name">__init__.py</span>
+                                    </li>
+                                    <li class="file highlight">
+                                        <i class="fas fa-file-code"></i>
+                                        <span class="file-name">settings.py</span>
+                                    </li>
+                                    <li class="file highlight">
+                                        <i class="fas fa-file-code"></i>
+                                        <span class="file-name">urls.py</span>
+                                    </li>
+                                    <li class="file">
+                                        <i class="fas fa-file-code"></i>
+                                        <span class="file-name">wsgi.py</span>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="folder">
+                                <i class="fas fa-folder"></i>
+                                <span class="folder-name">media/</span>
+                                <ul>
+                                    <li class="folder">
+                                        <i class="fas fa-folder"></i>
+                                        <span class="folder-name">peliculas/</span>
+                                    </li>
+                                    <li class="folder">
+                                        <i class="fas fa-folder"></i>
+                                        <span class="folder-name">salas/</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <div class="legend">
+                <div class="legend-item">
+                    <i class="fas fa-folder-open legend-folder"></i>
+                    <span>Carpeta</span>
+                </div>
+                <div class="legend-item">
+                    <i class="fas fa-file-code legend-file"></i>
+                    <span>Archivo</span>
+                </div>
+                <div class="legend-item">
+                    <i class="fas fa-star" style="color: #2ecc71;"></i>
+                    <span>Archivo crítico</span>
+                </div>
+            </div>
+            <div>
+                <i class="fas fa-code"></i> CineBox Cielo - Proyecto Django
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Función para expandir/contraer carpetas
+            document.querySelectorAll('.expand-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const li = this.parentElement;
+                    li.classList.toggle('expanded');
+                    li.classList.toggle('collapsed');
+                    
+                    // Cambiar icono de carpeta
+                    const folderIcon = li.querySelector('.fa-folder, .fa-folder-open');
+                    if (folderIcon) {
+                        if (li.classList.contains('expanded')) {
+                            folderIcon.classList.remove('fa-folder');
+                            folderIcon.classList.add('fa-folder-open');
+                        } else {
+                            folderIcon.classList.remove('fa-folder-open');
+                            folderIcon.classList.add('fa-folder');
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  {% load static %}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reserva tus salas privadas de cine | Cinebox Perú">
+
+  <!-- SEO Social Tags -->
+  <meta property="og:title" content="Cinebox Perú | Reserva tu sala privada">
+  <meta property="og:description" content="Disfruta una experiencia de cine única reservando salas privadas con Cinebox.">
+  <meta property="og:image" content="{% static 'img/og-cinebox.jpg' %}">
+  <meta property="og:url" content="https://tusitio.com">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="{% static 'img/favicon.ico' %}">
+  <link rel="apple-touch-icon" href="{% static 'img/apple-touch-icon.png' %}">
+
+  <!-- Bootstrap & Estilos -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{% static 'css/index.css' %}" rel="stylesheet">
+
+  <title>Cinebox | Reserva de salas privadas</title>
+</head>
+<body>
+  <!-- Header -->
+  <header class="cine-header">
+    <div class="container-fluid">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="cine-logo">
+          <a href="/"><img src="{% static 'img/logo_cinebox.png' %}" alt="Cinebox" width="180" height="60"></a>
+        </div>
+        <nav>
+          {% if request.user.is_authenticated %}
+          <div class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle cine-user-btn" data-bs-toggle="dropdown">
+              👤 HOLA {{ request.user.email|truncatechars:15 }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'mi_perfil' %}">Mi perfil</a></li>
+              <li><a class="dropdown-item" href="{% url 'mis_reservas' %}">Mis reservas</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="{% url 'logout' %}">Cerrar sesión</a></li>
+            </ul>
+          </div>
+          {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline-light me-2">Iniciar sesión</a>
+          <a href="{% url 'registro_usuario' %}" class="btn btn-warning">Registrarse</a>
+          {% endif %}
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="cine-hero" id="cineHero">
+    <div class="cine-hero-content d-flex align-items-end" style="min-height: 100%;">
+      <button class="btn cine-hero-btn" id="mainReserveBtn">Reservar</button>
+    </div>
+  </section>
+
+  <!-- JSON de imágenes para JS -->
+  <script id="imageUrls" type="application/json">
+    {{ image_urls|safe }}
+  </script>
+
+  <!-- Sección de salas -->
+  <section class="cine-salas">
+    <div class="container">
+      <h2 class="cine-section-title"><span class="cine-title-icon">🎥</span>Nuestras Salas</h2>
+      <div class="cine-salas-grid">
+        {% for sala in salas %}
+        <div class="cine-sala-card">
+          <div class="cine-sala-img" style="background-image: url('{{ sala.imagen.url }}')">
+            <div class="cine-sala-overlay">
+              <a href="{% url 'detalle_sala' sala.slug %}" class="btn btn-outline-light cine-sala-btn">Reservar</a>
+            </div>
+          </div>
+          <div class="cine-sala-info">
+            <h3>{{ sala.nombre }}</h3>
+            <p>Capacidad: {{ sala.capacidad }} personas</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="cine-footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">
+          <img src="{% static 'img/logo_cinebox.png' %}" alt="Cinebox" height="40">
+        </div>
+        <div class="col-md-4">
+          <ul class="cine-footer-links">
+            <li><a href="#">Términos y condiciones</a></li>
+            <li><a href="#">Política de privacidad</a></li>
+            <li><a href="#">Contáctanos</a></li>
+          </ul>
+        </div>
+        <div class="col-md-4 text-md-end text-start">
+          <a href="#" class="cine-social-icon"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="cine-social-icon"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="cine-social-icon"><i class="fab fa-twitter"></i></a>
+        </div>
+      </div>
+      <div class="text-center mt-4">
+        <small class="text-light">© 2023 Cinebox Cielo. Todos los derechos reservados.</small>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="{% static 'js/index.js' %}" defer></script>
+</body>
+</html>

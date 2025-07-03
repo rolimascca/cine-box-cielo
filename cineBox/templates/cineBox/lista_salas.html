@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="text-center mb-4">{{ titulo }}</h1>
+    
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {% for sala in salas %}
+        <div class="col">
+            <div class="card h-100 shadow">
+                <img src="{{ sala.imagen.url }}" class="card-img-top" alt="{{ sala.nombre }}" style="height: 200px; object-fit: cover;">
+                
+                <div class="card-body">
+                    <h5 class="card-title">{{ sala.nombre }}</h5>
+                    <p class="card-text">{{ sala.descripcion|truncatechars:100 }}</p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item">
+                            <i class="fas fa-users me-2"></i> Capacidad: {{ sala.capacidad }}
+                        </li>
+                        <li class="list-group-item">
+                            <i class="fas fa-film me-2"></i> Películas: {{ sala.peliculas.count }}
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="card-footer bg-white">
+                    <a href="{% url 'detalle_sala' sala.slug %}" class="btn btn-primary w-100">
+                        Ver detalles y horarios
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">No hay salas disponibles actualmente.</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
