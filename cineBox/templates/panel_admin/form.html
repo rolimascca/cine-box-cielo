@@ -21,11 +21,12 @@
             background-color: #f8f9fc;
             color: var(--text-color);
             font-family: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+            padding: 20px;
         }
         
         .admin-container {
             max-width: 960px;
-            margin: 2rem auto;
+            margin: 0 auto;
             padding: 2rem;
             background: white;
             border-radius: 0.35rem;
@@ -72,11 +73,11 @@
             margin-top: 0.25rem;
         }
         
-        /* Mejoras para campos de archivo */
         .file-input-container {
             position: relative;
             overflow: hidden;
             display: inline-block;
+            width: 100%;
         }
         
         .file-input-button {
@@ -96,6 +97,16 @@
             margin-left: 1rem;
             font-size: 0.9rem;
             color: #6c757d;
+        }
+        
+        #real-file-input {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -124,9 +135,7 @@
                         <i class="fas fa-upload me-1"></i>Seleccionar archivo
                     </button>
                     <span class="file-input-name">Ningún archivo seleccionado</span>
-                    <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" 
-                           class="form-control visually-hidden" 
-                           {% if field.field.required %}required{% endif %}>
+                    {{ field }}
                 </div>
                 {% else %}
                 {{ field }}
@@ -158,34 +167,54 @@
     
     <!-- Scripts personalizados -->
     <script>
-        // Manejo de campos de archivo para mostrar el nombre del archivo seleccionado
-        document.querySelectorAll('input[type="file"]').forEach(input => {
-            input.addEventListener('change', function() {
-                const fileName = this.files[0]?.name || 'Ningún archivo seleccionado';
-                this.parentNode.querySelector('.file-input-name').textContent = fileName;
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manejo de campos de archivo
+            document.querySelectorAll('input[type="file"]').forEach(input => {
+                const container = input.parentNode;
+                const button = container.querySelector('.file-input-button');
+                const fileNameDisplay = container.querySelector('.file-input-name');
+                
+                // Estilo para el input file real
+                input.style.position = 'absolute';
+                input.style.left = '0';
+                input.style.top = '0';
+                input.style.width = '100%';
+                input.style.height = '100%';
+                input.style.opacity = '0';
+                input.style.cursor = 'pointer';
+                
+                // Click en el botón personalizado
+                if(button) {
+                    button.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        input.click();
+                    });
+                }
+                
+                // Mostrar nombre del archivo seleccionado
+                input.addEventListener('change', function() {
+                    if(this.files && this.files.length > 0) {
+                        fileNameDisplay.textContent = this.files[0].name;
+                    } else {
+                        fileNameDisplay.textContent = 'Ningún archivo seleccionado';
+                    }
+                });
+            });
+            
+            // Validación de formularios
+            const forms = document.querySelectorAll('.needs-validation');
+            
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    
+                    form.classList.add('was-validated');
+                }, false);
             });
         });
-        
-        // Validación de formularios
-        (function() {
-            'use strict';
-            
-            // Fetch all forms to apply custom Bootstrap validation styles to
-            var forms = document.querySelectorAll('.needs-validation');
-            
-            // Loop over them and prevent submission
-            Array.prototype.slice.call(forms)
-                .forEach(function(form) {
-                    form.addEventListener('submit', function(event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-        })();
     </script>
 </body>
 </html>
