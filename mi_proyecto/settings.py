@@ -143,7 +143,12 @@ if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Para servir archivos estáticos con Whitenoise
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# En producción, apunta a volumen persistente o almacenamiento externo
+if not DEBUG:
+    MEDIA_ROOT = '/mnt/media'  # Ruta del volumen persistente montado en Render
+else:
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ===========================
 # Autenticación
