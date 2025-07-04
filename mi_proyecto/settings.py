@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your seceret key') 
 
-DEBUG = 'RENDER' not in os.environ
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'  # Mejor controlar DEBUG con variable de entorno
 
 
 ALLOWED_HOSTS = ['*']
