@@ -1,5 +1,7 @@
 
-from . import admin_panel  
+from . import admin_panel 
+from django.conf.urls.static import static 
+from django.conf import settings
 from django.urls import path, reverse
 from .views import home, login_view, detalle_sala, reservar_sala, registro_usuario, confirmacion_reserva_ex, logout_view, mis_reservas, verificar_horario,  lista_salas, horarios_por_fecha
 
@@ -89,5 +91,7 @@ urlpatterns = [
 
 
 
-]+ debug_toolbar_urls() 
+]+ debug_toolbar_urls()     
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

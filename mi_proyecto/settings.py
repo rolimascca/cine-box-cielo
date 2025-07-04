@@ -131,7 +131,7 @@ USE_TZ = True
 # Archivos estáticos y media
 # ===========================
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Para collectstatic
 STATICFILES_DIRS = [
@@ -143,7 +143,7 @@ if not DEBUG:
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Para servir archivos estáticos con Whitenoise
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ===========================
 # Autenticación
