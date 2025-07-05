@@ -7,6 +7,7 @@ from .models import Sala, Precio, Usuario, Reserva, Pelicula, Horario, Pago
 from .forms import RegistroUsuarioForm, CustomUsuarioChangeForm
 from cloudinary.forms import CloudinaryFileField
 
+from django import forms
 # Formulario personalizado para el admin de Sala
 class SalaAdminForm(forms.ModelForm):
     imagen = CloudinaryFileField()
