@@ -7,21 +7,23 @@ from .models import Sala, Precio, Usuario, Reserva, Pelicula, Horario, Pago
 from .forms import RegistroUsuarioForm, CustomUsuarioChangeForm
 from cloudinary.forms import CloudinaryFileField
 
+# Formulario personalizado para el admin de Sala
+class SalaAdminForm(forms.ModelForm):
+    imagen = CloudinaryFileField()
+
+    class Meta:
+        model = Sala
+        fields = '__all__'
 
 @admin.register(Sala)
 class SalaAdmin(admin.ModelAdmin):
+    form = SalaAdminForm
     list_display = ("nombre", "capacidad", "imagen_preview")
     prepopulated_fields = {"slug": ("nombre",)}
     readonly_fields = ("imagen_preview",)
-    
-    # Sobrescribe el formfield para imágenes
-    def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name == 'imagen':
-            return CloudinaryFileField()
-        return super().formfield_for_dbfield(db_field, **kwargs)
-    
+
     def imagen_preview(self, obj):
-        if obj.imagen_url:  # Usamos la propiedad que creaste
+        if obj.imagen_url:
             return mark_safe(
                 f'<img src="{obj.imagen_url}" style="max-height: 200px; border-radius: 5px;" />'
             )
@@ -29,21 +31,20 @@ class SalaAdmin(admin.ModelAdmin):
     imagen_preview.short_description = "Vista previa"
 
     def save_model(self, request, obj, form, change):
-        """Valida que no se modifiquen salas con reservas existentes"""
         if change and Reserva.objects.filter(sala=obj).exists():
-            raise ValidationError(
-                "No puedes modificar una sala con reservas activas. "
-                "Crea una nueva sala en su lugar."
+            # Mostrar mensaje de error en lugar de lanzar excepción
+            self.message_user(
+                request,
+                "No puedes modificar una sala con reservas activas. Crea una nueva sala en su lugar.",
+                level=messages.ERROR
             )
-        
+            return  # No guardar cambios
         super().save_model(request, obj, form, change)
 
     def get_readonly_fields(self, request, obj=None):
-        """Bloquea edición de slug si hay reservas"""
         if obj and Reserva.objects.filter(sala=obj).exists():
             return ("slug",) + self.readonly_fields
         return self.readonly_fields
-
 
 @admin.register(Precio)
 class PrecioAdmin(admin.ModelAdmin):
