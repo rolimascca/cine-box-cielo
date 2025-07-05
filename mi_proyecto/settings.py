@@ -15,7 +15,7 @@ import cloudinary_storage
 CLOUDINARY_STORAGE = {
     'API_PROXY': 'http://proxy.server:3128',
     'QUALITY': 'auto:best',
-    'FORMAT': 'auto'
+    'FORMAT': 'auto',
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
