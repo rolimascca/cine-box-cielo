@@ -92,16 +92,15 @@
               <p class="text-gray fs-5 lh-lg">{{ sala.descripcion }}</p>
             </div>
 
+            
             <!-- Selector de fechas -->
             <div class="cine-date-picker mb-5">
-              <h5 class="text-danger mb-3"><i class="fas fa-calendar-alt me-2"></i> Elige tu fecha</h5>
-              <div class="d-flex flex-row flex-nowrap overflow-auto gap-3 pb-3">
-                {% for dia in dias|slice:":5" %}
+              <h5 class="text-danger mb-3"><i class="fas fa-calendar-alt"></i> Elige tu fecha</h5>
+              <div class="d-flex flex-row flex-nowrap overflow-auto gap-2 pb-2">
+                {% for dia in dias|slice:":3" %}
                 <a href="?fecha={{ dia.fecha_str }}"
-                  class="btn btn-sm {% if dia.fecha_obj == fecha_actual %}btn-danger{% else %}btn-outline-light{% endif %} flex-shrink-0">
-                  <span class="d-block">{{ dia.dia_semana }}</span>
-                  <span class="d-block fw-bold fs-5">{{ dia.dia_numero }}</span>
-                  <span class="d-block text-uppercase fs-sm">{{ dia.mes }}</span>
+                  class="btn btn-sm {% if dia.fecha_obj == fecha_actual %}btn-danger{% else %}btn-outline-light{% endif %}">
+                  {{ dia.titulo }}
                 </a>
                 {% endfor %}
               </div>
