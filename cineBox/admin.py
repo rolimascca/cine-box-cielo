@@ -1,3 +1,5 @@
+from django.utils.safestring import mark_safe
+
 from django.contrib import admin
 from django.contrib import messages
 from django.core.exceptions import ValidationError
