@@ -16,9 +16,14 @@ class Sala(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, blank=True)
     descripcion = models.TextField()
-    imagen = models.CloudinaryField(
-        upload_to="salas/",
-        help_text="Sube una imagen en diferentes formatos",)
+    imagen = CloudinaryField(
+    'image',
+    folder='salas',        # Carpeta en Cloudinary
+    overwrite=True,
+    resource_type='image',
+    format='jpg',
+    transformation={'quality': 'auto:eco'}
+    )
     capacidad = models.IntegerField()
 
     class Meta:
