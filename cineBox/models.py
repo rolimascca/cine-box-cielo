@@ -160,7 +160,7 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     
 class Pelicula(models.Model):
     titulo = models.CharField(max_length=200)
-    imagen = models.ImageField(upload_to='peliculas/')
+    imagen = CloudinaryField('image', folder='peliculas', blank=True, null=True)
     sala = models.ForeignKey(Sala, on_delete=models.CASCADE, related_name='peliculas')
 
     def __str__(self):
