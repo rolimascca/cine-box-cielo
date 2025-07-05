@@ -2,7 +2,11 @@
 <div class="contenedor-peliculas">
     {% for pelicula in peliculas %}
     <div class="pelicula-card">
-        <img src="{{ pelicula.imagen.url }}" alt="{{ pelicula.titulo }}" class="pelicula-imagen">
+        {% if pelicula.imagen %}
+            {% cloudinary pelicula.imagen.url width=300 height=450 crop="fill" class="pelicula-imagen" alt=pelicula.titulo %}
+        {% else %}
+            <img src="{% static 'img/default-pelicula.jpg' %}" alt="Imagen por defecto" class="pelicula-imagen">
+        {% endif %}
         <h3 class="pelicula-titulo">{{ pelicula.titulo }}</h3>
     </div>
     {% empty %}

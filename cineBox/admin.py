@@ -79,11 +79,26 @@ class UsuarioAdmin(BaseUserAdmin):
         except Exception as e:
             messages.error(request, f"Error al guardar el usuario: {str(e)}")
 
+class PeliculaAdminForm(forms.ModelForm):
+    imagen = CloudinaryFileField()
+
+    class Meta:
+        model = Pelicula
+        fields = '__all__'
+
 @admin.register(Pelicula)
 class PeliculaAdmin(admin.ModelAdmin):
-    list_display = ('titulo', 'sala')
+    form = PeliculaAdminForm
+    list_display = ('titulo', 'sala', 'imagen_preview')
     list_filter = ['sala']
+    readonly_fields = ('imagen_preview',)
 
+    def imagen_preview(self, obj):
+        if obj.imagen:
+            from django.utils.safestring import mark_safe
+            return mark_safe(f'<img src="{obj.imagen.url}" style="max-height: 100px;" />')
+        return "Sin imagen"
+    imagen_preview.short_description = "Imagen"
 
 @admin.register(Horario)
 class HorarioAdmin(admin.ModelAdmin):

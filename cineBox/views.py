@@ -124,6 +124,7 @@ def detalle_sala(request, slug):
         'fecha_actual': fecha_actual,
         'dias':         dias,
     })
+    
 def lista_salas(request):
     # Obtener todas las salas con sus películas relacionadas
     salas = Sala.objects.prefetch_related('peliculas').all()
