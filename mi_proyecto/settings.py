@@ -142,13 +142,10 @@ if not DEBUG:
     STATIC_ROOT = os.path.join(BASE_DIR, 'cineBox/static')  # Para producción
     STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Para servir archivos estáticos con Whitenoise
 
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-# En producción, apunta a volumen persistente o almacenamiento externo
-if not DEBUG:
-    MEDIA_ROOT = '/mnt/media'  # Ruta del volumen persistente montado en Render
-else:
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # ===========================
 # Autenticación
