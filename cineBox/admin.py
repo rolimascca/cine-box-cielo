@@ -5,6 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from .models import Sala, Precio, Usuario, Reserva, Pelicula, Horario, Pago
 from .forms import RegistroUsuarioForm, CustomUsuarioChangeForm
+from cloudinary.forms import CloudinaryFileField
 
 
 @admin.register(Sala)
@@ -13,23 +14,32 @@ class SalaAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("nombre",)}
     readonly_fields = ("imagen_preview",)
     
+    # Sobrescribe el formfield para imágenes
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'imagen':
+            return CloudinaryFileField()
+        return super().formfield_for_dbfield(db_field, **kwargs)
+    
     def imagen_preview(self, obj):
-        if obj.imagen:
+        if obj.imagen_url:  # Usamos la propiedad que creaste
             return mark_safe(
-                f'<img src="{obj.imagen.url}" style="max-height: 200px;" />'
+                f'<img src="{obj.imagen_url}" style="max-height: 200px; border-radius: 5px;" />'
             )
         return "Sin imagen"
     imagen_preview.short_description = "Vista previa"
 
     def save_model(self, request, obj, form, change):
+        """Valida que no se modifiquen salas con reservas existentes"""
         if change and Reserva.objects.filter(sala=obj).exists():
             raise ValidationError(
                 "No puedes modificar una sala con reservas activas. "
                 "Crea una nueva sala en su lugar."
             )
+        
         super().save_model(request, obj, form, change)
 
     def get_readonly_fields(self, request, obj=None):
+        """Bloquea edición de slug si hay reservas"""
         if obj and Reserva.objects.filter(sala=obj).exists():
             return ("slug",) + self.readonly_fields
         return self.readonly_fields
