@@ -16,7 +16,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY', default='your seceret key') 
 
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'  # Mejor controlar DEBUG con variable de entorno
+DEBUG = False  # Mejor controlar DEBUG con variable de entorno
 
 
 ALLOWED_HOSTS = ['*']
@@ -61,6 +61,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # ===========================
 # Configuración de URLs y WSGI
 # ===========================
@@ -138,9 +139,7 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
-if not DEBUG:
-    STATIC_ROOT = os.path.join(BASE_DIR, 'cineBox/static')  # Para producción
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # Para servir archivos estáticos con Whitenoise
+
 
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
