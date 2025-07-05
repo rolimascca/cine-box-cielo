@@ -16,7 +16,7 @@ class Sala(models.Model):
     slug = models.SlugField(unique=True, blank=True)
     descripcion = models.TextField()
     imagen = models.ImageField(
-        upload_to="salas/"
+        upload_to="salas/",
         help_text="Sube una imagen en diferentes formatos",)
     capacidad = models.IntegerField()
 
