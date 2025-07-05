@@ -13,7 +13,7 @@ import cloudinary_storage
 # Configuración Cloudinary
 # ========================
 CLOUDINARY_STORAGE = {
-    'API_PROXY': 'http://proxy.server:3128',
+    #'API_PROXY': 'http://proxy.server:3128',
     'QUALITY': 'auto:best',
     'FORMAT': 'auto',
     'CLOUD_NAME': os.environ.get('CLOUDINARY_CLOUD_NAME'),
