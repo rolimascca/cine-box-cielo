@@ -10,12 +10,13 @@ from django.utils import timezone
 import uuid
 from decimal import Decimal
 from datetime import timedelta
+from cloudinary.models import CloudinaryField
 
 class Sala(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, blank=True)
     descripcion = models.TextField()
-    imagen = models.ImageField(
+    imagen = models.CloudinaryField(
         upload_to="salas/",
         help_text="Sube una imagen en diferentes formatos",)
     capacidad = models.IntegerField()
