@@ -15,10 +15,14 @@ class Sala(models.Model):
     nombre = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(unique=True, blank=True)
     descripcion = models.TextField()
-    imagen = models.ImageField(upload_to="salas/")
+    imagen = models.ImageField(
+        upload_to="salas/"
+        help_text="Sube una imagen en diferentes formatos",)
     capacidad = models.IntegerField()
 
     class Meta:
+        verbose_name = "Sala"
+        verbose_name_plural = "Salas"
         permissions = [
             ("ver_sala", "Puede ver las salas"),
             ("crear_sala", "Puede crear salas"),
@@ -42,6 +46,12 @@ class Sala(models.Model):
 
     def __str__(self):
         return self.nombre
+    @property
+    def imagen_url(self):
+        """Devuelve la URL completa de la imagen en Cloudinary"""
+        if self.imagen and hasattr(self.imagen, 'url'):
+            return self.imagen.url
+        return None
 
 class Horario(models.Model):
     sala = models.ForeignKey(Sala, on_delete=models.CASCADE, related_name='horarios')

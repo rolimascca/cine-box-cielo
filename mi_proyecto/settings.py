@@ -17,6 +17,7 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.environ.get('CLOUDINARY_API_KEY'),
     'API_SECRET': os.environ.get('CLOUDINARY_API_SECRET'),
     'SECURE': True,
+    'EXCLUDE_DELETE_ORPHANED_MEDIA_PATHS': ('media/',),
 }
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
 

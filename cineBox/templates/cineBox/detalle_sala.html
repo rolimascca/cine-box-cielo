@@ -1,5 +1,6 @@
 {% extends "base_dos.html" %}
 {% load static %}
+{% load cloudinary %}
 
 <!doctype html>
 <html lang="es">
@@ -7,7 +8,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Reserva tu experiencia en {{ sala.nombre }} – Disfruta del mejor cine con la mejor calidad y confort">
-
 
   {% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/detalle_sala.css' %}">
@@ -19,153 +19,185 @@
 
   <title>{{ sala.nombre }} | CineBox</title>
 
+  <!-- Meta tags para redes sociales (optimizado para Cloudinary) -->
+  <meta property="og:image" content="{% if sala.imagen %}{% cloudinary_url sala.imagen.url width=1200 height=630 crop="fill" %}{% else %}{% static 'img/default-og.jpg' %}{% endif %}">
+  <meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body>
 
-    {% block content %}
+  {% block content %}
   <!-- Header -->
-    <header class="cine-header py-3">
-        <div class="container d-flex justify-content-between align-items-center">
-        <h1 class="cine-title display-4 text-danger">{{ sala.nombre }}</h1>
+  <header class="cine-header py-3">
+    <div class="container d-flex justify-content-between align-items-center">
+      <h1 class="cine-title display-4 text-danger">{{ sala.nombre }}</h1>
+    </div>
+  </header>
+  
+  <main class="container py-5">
+    <div class="row g-5">
+      <!-- Imagen y características -->
+      <div class="col-lg-6">
+        {% if sala.imagen %}
+          {% cloudinary sala.imagen.url width=800 height=600 crop="fill" class="cine-main-image mb-4 img-fluid rounded-3" loading="lazy" alt=sala.nombre %}
+        {% else %}
+          <div class="cine-main-image-placeholder bg-dark d-flex align-items-center justify-content-center rounded-3 mb-4">
+            <i class="fas fa-camera fa-5x text-secondary"></i>
+          </div>
+        {% endif %}
         
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="cine-feature-box p-3 text-center">
+              <i class="fas fa-users fa-2x text-danger"></i>
+              <h5 class="mt-2">Capacidad</h5>
+              <p class="mb-0">{{ sala.capacidad }} personas</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="cine-feature-box p-3 text-center">
+              <i class="fas fa-ticket-alt fa-2x text-danger"></i>
+              <h5 class="mt-2">Tipo de Sala</h5>
+              <p class="mb-0">{{ sala.get_tipo_display }}</p>
+            </div>
+          </div>
         </div>
-    </header>
-    
-    <main class="container py-5">
-        <div class="row g-5">
-        <!-- Imagen y características -->
-        <div class="col-lg-6">
-            <img src="{{ sala.imagen.url }}" alt="{{ sala.nombre }}"
-                class="cine-main-image mb-4" loading="lazy">
-            <div class="row g-3">
-            <div class="col-6">
-                <div class="cine-feature-box p-3 text-center">
-                <i class="fas fa-users fa-2x text-danger"></i>
-                <h5 class="mt-2">Capacidad</h5>
-                <p class="mb-0">{{ sala.capacidad }} personas</p>
-                </div>
+      </div>
+
+      <!-- Formulario de reserva -->
+      <div class="col-lg-6">
+        <form method="POST" action="{% url 'reservar_sala' sala.slug %}">
+          {% csrf_token %}
+          <div class="bg-black p-4 rounded-3">
+            <div class="mb-4">
+              <h5 class="text-light">Descripción</h5>
+              <p class="text-gray">{{ sala.descripcion }}</p>
             </div>
-            <div class="col-6">
-                <div class="cine-feature-box p-3 text-center">
-                <i class="fas fa-ticket-alt fa-2x text-danger"></i>
-                <h5 class="mt-2">Tipo de Sala</h5>
-                <p class="mb-0">{{ sala.nombre }}</p>
-                </div>
-            </div>
-            </div>
-        </div>
 
-        <!-- Formulario de reserva -->
-        <div class="col-lg-6">
-            <form method="POST" action="{% url 'reservar_sala' sala.slug %}">
-            {% csrf_token %}
-            <div class="bg-black p-4 rounded-3">
-
-                <div class="mb-4">
-                    <h5 class="text-light">Descripcion</h5>
-                    <p class="text-gray">{{ sala.descripcion }}</p>
-                </div>
-
-                <!-- Selector de fechas -->
-                <div class="cine-date-picker mb-5">
-                <h5 class="text-danger mb-3"><i class="fas fa-calendar-alt"></i> Elige tu fecha</h5>
-                <div class="d-flex flex-row flex-nowrap overflow-auto gap-2 pb-2">
-                    {% for dia in dias|slice:":3" %}
-                    <a href="?fecha={{ dia.fecha_str }}"
-                        class="btn btn-sm {% if dia.fecha_obj == fecha_actual %}btn-danger{% else %}btn-outline-light{% endif %}">
-                        {{ dia.titulo }}
-                    </a>
-                    {% endfor %}
-                </div>
-                </div>
-
-                <!-- Selector de horarios -->
-                <div class="cine-showtimes mb-5">
-                <h5 class="text-danger mb-3"><i class="fas fa-clock"></i> Horarios disponibles</h5>
-                <div class="row g-3">
-                    {% for horario in horarios %}
-                    <div class="col-6 col-md-4 col-lg-3">
-                        <label class="time-card {% if not horario.disponible %}disabled{% endif %}">
-                        <input type="radio" name="horario_id"
-                                value="{{ horario.id }}" class="d-none"
-                                {% if not horario.disponible %}disabled{% endif %}>
-                        <span class="time-label d-block fs-4 fw-bold">{{ horario.hora|date:"H:i" }}</span>
-                        {% if not horario.disponible %}
-                            <span class="badge bg-secondary">AGOTADO</span>
-                        {% endif %}
-                        </label>
-                    </div>
-                    {% empty %}
-                    <div class="col-12">
-                        <div class="alert alert-warning text-center">
-                        No hay funciones programadas para esta fecha
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-                </div>
-
-                <!-- Precio y botón -->
-                <div class="cine-price-box text-center p-3 mb-3">
-                <h4 class="mb-0">
-                    <small>Precio desde</small><br>
-                    S/ {{ precio.precio }}
-                </h4>
-                </div>
-                {% if request.user.is_authenticated %}
-                <button type="submit" class="btn btn-lg text-light w-100 cine-book-btn">
-                    <i class="fas fa-shopping-cart"></i> COMPRAR ENTRADAS
-                </button>
-                {% else %}
-                <a href="{% url 'login' %}?next={% url 'reservar_sala' sala.slug %}"
-                    class="btn btn-lg btn-outline-warning w-100 cine-book-btn">
-                    <i class="fas fa-lock"></i> INICIAR SESIÓN
+            <!-- Selector de fechas -->
+            <div class="cine-date-picker mb-5">
+              <h5 class="text-danger mb-3"><i class="fas fa-calendar-alt"></i> Elige tu fecha</h5>
+              <div class="d-flex flex-row flex-nowrap overflow-auto gap-2 pb-2">
+                {% for dia in dias|slice:":3" %}
+                <a href="?fecha={{ dia.fecha_str }}"
+                  class="btn btn-sm {% if dia.fecha_obj == fecha_actual %}btn-danger{% else %}btn-outline-light{% endif %}">
+                  {{ dia.titulo }}
                 </a>
-                {% endif %}
-
+                {% endfor %}
+              </div>
             </div>
-            </form>
-        </div>
-        </div>
 
-        <!-- Sección 3D de Películas -->
-    
-        <section class="mt-5">
-            <h5 class="text-danger mb-3"><i class="fas fa-film"></i> Películas en esta Sala</h5>
-            <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4">
-            {% for peli in sala.peliculas.all %}
-                <div class="col">
-                <div class="cine-3d-card-wrapper">
-                    <div class="cine-3d-card">
-                    <!-- Usamos peli.imagen.url que es tu ImageField -->
-                    <img src="{{ peli.imagen.url }}"
-                        alt="Póster de {{ peli.titulo }}"
-                        loading="lazy"
-                        class="cine-3d-img">
-                    <div class="cine-3d-overlay">
-                        <h6 class="movie-title mb-1">{{ peli.titulo }}</h6>
-                        <div class="badges-format mb-1">
-                        {% if peli.formato == '2D' %}<span class="badge fmt">2D</span>{% endif %}
-                        {% if peli.formato == '3D' %}<span class="badge fmt">3D</span>{% endif %}
-                        {% if peli.imax %}<span class="badge fmt">IMAX</span>{% endif %}
-                        </div>
-                        <small class="rating">{{ peli.calificacion }}/10</small>
-                    </div>
-                    </div>
+            <!-- Selector de horarios -->
+            <div class="cine-showtimes mb-5">
+              <h5 class="text-danger mb-3"><i class="fas fa-clock"></i> Horarios disponibles</h5>
+              <div class="row g-3">
+                {% for horario in horarios %}
+                <div class="col-6 col-md-4 col-lg-3">
+                  <label class="time-card {% if not horario.disponible %}disabled{% endif %}">
+                    <input type="radio" name="horario_id"
+                      value="{{ horario.id }}" class="d-none"
+                      {% if not horario.disponible %}disabled{% endif %}
+                      required>
+                    <span class="time-label d-block fs-4 fw-bold">{{ horario.hora|date:"H:i" }}</span>
+                    {% if not horario.disponible %}
+                      <span class="badge bg-secondary">AGOTADO</span>
+                    {% endif %}
+                  </label>
                 </div>
+                {% empty %}
+                <div class="col-12">
+                  <div class="alert alert-warning text-center">
+                    No hay funciones programadas para esta fecha
+                  </div>
                 </div>
-            {% endfor %}
+                {% endfor %}
+              </div>
             </div>
-        </section>
-    
 
-    </main>
-    {% endblock %}
+            <!-- Precio y botón -->
+            <div class="cine-price-box text-center p-3 mb-3">
+              <h4 class="mb-0">
+                <small>Precio desde</small><br>
+                S/ {{ precio.precio }}
+              </h4>
+            </div>
+            
+            {% if request.user.is_authenticated %}
+            <button type="submit" class="btn btn-lg text-light w-100 cine-book-btn">
+              <i class="fas fa-shopping-cart"></i> COMPRAR ENTRADAS
+            </button>
+            {% else %}
+            <a href="{% url 'login' %}?next={% url 'reservar_sala' sala.slug %}"
+              class="btn btn-lg btn-outline-warning w-100 cine-book-btn">
+              <i class="fas fa-lock"></i> INICIAR SESIÓN
+            </a>
+            {% endif %}
+          </div>
+        </form>
+      </div>
+    </div>
 
+    <!-- Sección de Películas -->
+    <section class="mt-5">
+      <h5 class="text-danger mb-3"><i class="fas fa-film"></i> Películas en esta Sala</h5>
+      <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4">
+        {% for peli in sala.peliculas.all %}
+        <div class="col">
+          <div class="cine-3d-card-wrapper">
+            <div class="cine-3d-card">
+              {% if peli.imagen %}
+                {% cloudinary peli.imagen.url width=400 height=600 crop="fill" class="cine-3d-img" loading="lazy" alt="Póster de {{ peli.titulo }}" %}
+              {% else %}
+                <div class="cine-3d-img-placeholder bg-dark d-flex align-items-center justify-content-center">
+                  <i class="fas fa-film fa-3x text-secondary"></i>
+                </div>
+              {% endif %}
+              <div class="cine-3d-overlay">
+                <h6 class="movie-title mb-1">{{ peli.titulo }}</h6>
+                <div class="badges-format mb-1">
+                  {% if peli.formato == '2D' %}<span class="badge fmt">2D</span>{% endif %}
+                  {% if peli.formato == '3D' %}<span class="badge fmt">3D</span>{% endif %}
+                  {% if peli.imax %}<span class="badge fmt">IMAX</span>{% endif %}
+                </div>
+                <small class="rating">{{ peli.calificacion }}/10</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+          <div class="alert alert-info text-center">
+            Próximamente más películas
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+  </main>
+  {% endblock %}
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Script para manejar la selección de horarios -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const timeCards = document.querySelectorAll('.time-card');
+      
+      timeCards.forEach(card => {
+        card.addEventListener('click', function() {
+          // Remover selección previa
+          document.querySelectorAll('.time-card').forEach(c => {
+            c.classList.remove('selected');
+          });
+          
+          // Marcar como seleccionado
+          if(!this.classList.contains('disabled')) {
+            this.classList.add('selected');
+          }
+        });
+      });
+    });
+  </script>
 </body>
-
 </html>
-
