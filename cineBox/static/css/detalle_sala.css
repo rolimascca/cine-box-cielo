@@ -309,3 +309,50 @@ body {
         opacity: 1;
     }
 }
+
+.time-card {
+    cursor: pointer;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    padding: 12px 0;
+    background-color: #222;
+    color: #eee;
+    position: relative;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+    user-select: none;
+}
+
+.time-card:hover:not(.disabled),
+.time-card.selected {
+    border-color: #dc3545;
+    /* color rojo Bootstrap */
+    background-color: #dc3545;
+    color: white;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.7);
+}
+
+.time-card.disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.time-label {
+    font-weight: 700;
+    font-size: 1.25rem;
+    display: block;
+    text-align: center;
+}
+
+/* Badges posicionados */
+.time-card .badge {
+    font-size: 0.7rem;
+    padding: 0.25em 0.4em;
+    border-radius: 0.25rem;
+}
+
+/* Para que el input radio quede oculto pero accesible */
+.time-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
