@@ -106,7 +106,7 @@
                 <div class="col-6 col-md-4 col-lg-3">
                   <label class="time-card {% if not horario.disponible %}disabled{% endif %} position-relative">
                     <input type="radio" name="horario_id"
-                      value="{{ horario.id }}" class="d-none"
+                      value="{{ horario.id }}" 
                       {% if not horario.disponible %}disabled{% endif %}
                       required>
                     <span class="time-label d-block fw-bold">{{ horario.hora|date:"H:i" }}</span>
